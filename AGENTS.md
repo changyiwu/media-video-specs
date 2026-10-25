@@ -83,7 +83,7 @@ media-video-specs/
 
 其他常設規則：
 
-- 成片驗收通過後，照 `templates/發布資訊範本.md` 寫 `output/<主題>/發布資訊.md`（YouTube／FB／IG／Threads 文案、AI 揭露、`CREDITS.md` 署名）；範本五個媒體專案各一份、內容逐位元組相同，正本在 media-youtube-publish 的 `skills/youtube-video-workflow/references/`，改正本再整份覆蓋，不在本專案就地改
+- 成片驗收通過後，照 `templates/發布資訊範本.md` 寫 `output/<主題>/發布資訊.md`（YouTube／FB／IG／Threads 文案、AI 揭露、`CREDITS.md` 署名）；範本五個媒體專案各一份、內容逐位元組相同，正本在 media-youtube-publish 的 `skills/youtube-long/references/`，改正本再整份覆蓋，不在本專案就地改
 - 成片一律用 `tools/loudness.py --apply` 正規化到 **−15 LUFS**、真峰值 ≤ −1 dBTP 再交片（GOTCHAS E-6）
 - 三類共用的工具放 `tools/`，用 `--project output/<主題>` 呼叫；**不要複製進每個範本**（02、03 的 `generate_narration.py` 已經是兩份副本，改它時兩份一起改、只讓常數與旁白稿不同）
 - 讀音替換表 `tts-lexicon.md` **四個 repo 各一份、內容逐位元組相同**（本 repo、media-short-film、media-voice-clone、agent-speak/speak/；四個都公開，各自要單獨可用）：**改表時四份一起改**，用 `python ../media-short-film/tools/tts_lexicon.py --check`／`--sync` 檢查與合併；同層時程式會合併讀取，本 repo 的優先
