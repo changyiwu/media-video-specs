@@ -33,6 +33,7 @@ media-video-specs/
 │   ├── 01-marathon-light/
 │   ├── 02-factors-multiples/
 │   └── 03-ai-context/
+├── templates/                   ← 發布資訊範本（YouTube／FB／IG／Threads 文案）
 ├── tools/                       ← 三類共用的出片工具（字型瘦身、成片響度、修念錯字、授權照片）
 └── install/                     ← 自動安裝工具
     ├── check_env.sh

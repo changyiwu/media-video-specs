@@ -1,7 +1,7 @@
 # 把專案的字型瘦身成「片中實際用到的字」，並把 @font-face 改指向瘦身版
 # 執行（在 repo 根目錄）：
-#   python tools/subset_fonts.py --project videos/<主題>             瘦身並改指向
-#   python tools/subset_fonts.py --project videos/<主題> --restore   改回完整字型
+#   python tools/subset_fonts.py --project output/<主題>             瘦身並改指向
+#   python tools/subset_fonts.py --project output/<主題> --restore   改回完整字型
 #
 # 源石黑體三個字重各約 15 MB，一支片通常只用到幾百個字，瘦身後每個字重只剩一兩百 KB。
 # 掃描 index.html（與 compositions/ 底下的 html）的全文——標記與 JS 字串都算，JS 設定的文字也涵蓋——
@@ -9,7 +9,7 @@
 # 再把每個 @font-face 的 url() 改指向瘦身版。
 #
 # 要放在最後：所有文字（旁白字幕、圖說、照片來源）都改完、`check` 之前才跑；之後改過任何字就重跑
-# （它每次都從完整字型重切，不會越切越少）。只能在 videos/<主題>/ 跑：在 examples/ 跑會把版控中的
+# （它每次都從完整字型重切，不會越切越少）。只能在 output/<主題>/ 跑：在 examples/ 跑會把版控中的
 # 範本改成指向不在 git 裡的字檔（GOTCHAS D-12）。
 #
 # 改編自 mathruffian-dot/claude-motion-explainer-video 的 subset_fonts.py（MIT License，
@@ -47,13 +47,13 @@ def compositions(project):
 
 def main():
     ap = argparse.ArgumentParser(description="把字型瘦身成片中用到的字")
-    ap.add_argument("--project", required=True, help="影片專案資料夾（videos/<主題>）")
+    ap.add_argument("--project", required=True, help="影片專案資料夾（output/<主題>）")
     ap.add_argument("--fonts", nargs="+", default=FONTS, help="assets/fonts/ 底下要瘦身的字檔")
     ap.add_argument("--restore", action="store_true", help="把 url() 改回完整字型")
     a = ap.parse_args()
     project = Path(a.project).resolve()
     if REPO / "examples" in (project, *project.parents):
-        raise SystemExit("不要在 examples/ 底下跑：範本在版控裡，字檔不在。先 fork 到 videos/<主題>/（GOTCHAS D-12）")
+        raise SystemExit("不要在 examples/ 底下跑：範本在版控裡，字檔不在。先 fork 到 output/<主題>/（GOTCHAS D-12）")
     fonts_dir = project / "assets" / "fonts"
     files = compositions(project)
     if not files:

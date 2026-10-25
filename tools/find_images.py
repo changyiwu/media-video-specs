@@ -1,7 +1,7 @@
 # 從 Wikimedia Commons 找可以放進影片的授權照片（含 NASA 等公有領域照片），下載並記錄來源
 # 執行（在 repo 根目錄）：
 #   python tools/find_images.py search "Apollo 11 lunar module" [--limit 8]
-#   python tools/find_images.py get "File:Apollo 11 Lunar Module.jpg" --name lunar --project videos/<主題> [--width 1920]
+#   python tools/find_images.py get "File:Apollo 11 Lunar Module.jpg" --name lunar --project output/<主題> [--width 1920]
 #
 # 只保留允許放進影片再發布的授權：公有領域、CC0、CC BY、CC BY-SA（NC、ND、合理使用一律擋掉）。
 # `get` 存到 <專案>/assets/images/<name>.<副檔名>，並在 assets/images/CREDITS.md 寫一行作者、授權、來源；
@@ -103,7 +103,7 @@ def main():
     g = sub.add_parser("get", help="下載一張並寫進 CREDITS.md")
     g.add_argument("title", help='search 結果裡的完整標題，例如 "File:xxx.jpg"')
     g.add_argument("--name", required=True, help="存檔用的短名（不含副檔名）")
-    g.add_argument("--project", required=True, help="影片專案資料夾（videos/<主題>）")
+    g.add_argument("--project", required=True, help="影片專案資料夾（output/<主題>）")
     g.add_argument("--width", type=int, default=1920)
     a = ap.parse_args()
     if a.cmd == "search":

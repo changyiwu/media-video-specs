@@ -46,14 +46,16 @@ media-video-specs/
 │   ├── 01-marathon-light/
 │   ├── 02-factors-multiples/
 │   └── 03-ai-context/
-├── tools/                       ← 三類共用的出片工具（用 --project videos/<主題> 呼叫，見 tools/README.md）
+├── tools/                       ← 三類共用的出片工具（用 --project output/<主題> 呼叫，見 tools/README.md）
 │   ├── subset_fonts.py          ← 字型瘦身（GOTCHAS D-12）
 │   ├── loudness.py              ← 成片響度 −15 LUFS（GOTCHAS E-6）
 │   ├── polyphone_check.py       ← 旁白稿多音字預檢（GOTCHAS H-4）
 │   ├── fix_voice.py             ← 事後修念錯字（GOTCHAS H-5）
 │   ├── find_images.py           ← Wikimedia Commons 授權照片
 │   └── treat_images.py          ← 照片裁切、套色
-├── videos/                      ← 用本 repo 做的影片專案（每支一個子資料夾，已列入 .gitignore）
+├── templates/
+│   └── 發布資訊範本.md          ← 上架與社群文案範本（五個媒體專案共用，正本在 media-youtube-publish）
+├── output/                      ← 用本 repo 做的影片專案（每支一個子資料夾，已列入 .gitignore）
 └── install/                     ← 自動安裝工具
     ├── check_env.sh
     ├── install_fonts.sh         ← 源石黑體（從 ButTaiwan 下載）
@@ -71,7 +73,7 @@ media-video-specs/
 1. **先讀 [BOOTSTRAP.md](BOOTSTRAP.md)**，按 5 階段執行（階段 0 識別 agent → 1 環境檢查 → 2 介紹三類 → 3 試作 → 4 調整 → 5 打包技能）
 2. **動工前必讀 [GOTCHAS.md](GOTCHAS.md)**，尤其 A 流程、B 字幕、D HyperFrames 算繪、E 音訊四節
 3. **每階段都要等使用者確認再進下一步**，不要連跑五階段
-4. 影片專案一律放在本 repo 的 `videos/<主題>/`（fork 範本到這裡），`videos/` 已列入 `.gitignore`，不要放到 repo 外或加回版控
+4. 影片專案一律放在本 repo 的 `output/<主題>/`（fork 範本到這裡），`output/` 已列入 `.gitignore`，不要放到 repo 外或加回版控
 
 不可妥協的三條鐵律（來自 GOTCHAS A 節）：
 
@@ -81,8 +83,9 @@ media-video-specs/
 
 其他常設規則：
 
+- 成片驗收通過後，照 `templates/發布資訊範本.md` 寫 `output/<主題>/發布資訊.md`（YouTube／FB／IG／Threads 文案、AI 揭露、`CREDITS.md` 署名）；範本五個媒體專案各一份、內容逐位元組相同，正本在 media-youtube-publish 的 `skills/youtube-video-workflow/references/`，改正本再整份覆蓋，不在本專案就地改
 - 成片一律用 `tools/loudness.py --apply` 正規化到 **−15 LUFS**、真峰值 ≤ −1 dBTP 再交片（GOTCHAS E-6）
-- 三類共用的工具放 `tools/`，用 `--project videos/<主題>` 呼叫；**不要複製進每個範本**（02、03 的 `generate_narration.py` 已經是兩份副本，改它時兩份一起改、只讓常數與旁白稿不同）
+- 三類共用的工具放 `tools/`，用 `--project output/<主題>` 呼叫；**不要複製進每個範本**（02、03 的 `generate_narration.py` 已經是兩份副本，改它時兩份一起改、只讓常數與旁白稿不同）
 - 讀音替換表 `tts-lexicon.md` **四個 repo 各一份、內容逐位元組相同**（本 repo、media-short-film、media-voice-clone、agent-speak/speak/；四個都公開，各自要單獨可用）：**改表時四份一起改**，用 `python ../media-short-film/tools/tts_lexicon.py --check`／`--sync` 檢查與合併；同層時程式會合併讀取，本 repo 的優先
 - HyperFrames 版本**鎖定不追最新**，升級照 GOTCHAS D-11 的程序（三支範本 `check`／`render` 過再一起換版本號）
 

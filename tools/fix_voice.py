@@ -1,14 +1,14 @@
 # 片做完才發現某頁旁白有字念錯：整頁重念幾個候選、用耳朵挑一個，再把它等比伸縮回原本的長度換進去，
 # 頁長與動畫時間都不必重排（GOTCHAS H-5）
-# 執行（在 repo 根目錄；videos/<主題> 是從 02／03 範本 fork 出來、有 generate_narration.py 的專案）：
+# 執行（在 repo 根目錄；output/<主題> 是從 02／03 範本 fork 出來、有 generate_narration.py 的專案）：
 #   1. 產生候選（在專案資料夾裡）：
 #        python generate_narration.py --page 3 --take A --rate=-5%
 #        python generate_narration.py --page 3 --take B --text "換了拼法的整句"
 #   2. 試聽：把念錯那個詞所在的子句（從 0 起算，依標點切）從每個候選剪出來，串成一個檔，用耳朵選
-#        python tools/fix_voice.py --project videos/<主題> audition --page 3 --clauses 1 2
+#        python tools/fix_voice.py --project output/<主題> audition --page 3 --clauses 1 2
 #   3. 套用：選定的候選整句等比伸縮回原本的語音長度、音量對齊原句，覆蓋 page-03.mp3（原檔先備份）
-#        python tools/fix_voice.py --project videos/<主題> apply --page 3 --take B
-#   還原：python tools/fix_voice.py --project videos/<主題> restore --page 3
+#        python tools/fix_voice.py --project output/<主題> apply --page 3 --take B
+#   還原：python tools/fix_voice.py --project output/<主題> restore --page 3
 #
 # 為什麼整句伸縮、不切子句：重念的停頓位置和原句不同，照停頓切子句再拼，切點會落在字中間，結果漏字或重複。
 # 為什麼要人耳選：ASR 抓得到念成別的詞，抓不到聲調錯。
@@ -317,7 +317,7 @@ def restore(p, n):
 
 def main():
     ap = argparse.ArgumentParser(description="修正某頁旁白念錯的字，不動頁長與動畫")
-    ap.add_argument("--project", required=True, help="影片專案資料夾（videos/<主題>）")
+    ap.add_argument("--project", required=True, help="影片專案資料夾（output/<主題>）")
     sub = ap.add_subparsers(dest="cmd", required=True)
     a1 = sub.add_parser("audition", help="把各候選的關鍵子句串成一個試聽檔")
     a1.add_argument("--page", type=int, required=True)

@@ -187,9 +187,9 @@
 
 ### D-12 🌍 字型瘦身：出片前把字型切成片中用到的字
 - **現象**：每頁都載入源石黑體三個字重，各約 15 MB；每個算繪用的 Chrome worker 都要各自載入一次，專案搬移、上傳也很重。
-- **教訓**：所有文字都改完、`check` 之前，跑 `python tools/subset_fonts.py --project videos/<主題>`：掃描 `index.html` 用到的字，在 `assets/fonts/` 寫出 `*.subset.woff2`，並把 `@font-face` 的 `url()` 與 `format()` 改指向瘦身版；之後改過任何字就重跑（它每次都從完整字型重切）；`--restore` 改回完整字型。
+- **教訓**：所有文字都改完、`check` 之前，跑 `python tools/subset_fonts.py --project output/<主題>`：掃描 `index.html` 用到的字，在 `assets/fonts/` 寫出 `*.subset.woff2`，並把 `@font-face` 的 `url()` 與 `format()` 改指向瘦身版；之後改過任何字就重跑（它每次都從完整字型重切）；`--restore` 改回完整字型。
   - 02 範本實測：497 個字，三個字重各從約 15 MB 降到約 100 KB；`check` 通過，五個時間點的截圖和完整字型版**逐像素相同**。算繪速度沒有量過（原作者在快的電腦上量到沒有變快，好處主要是 worker 記憶體與檔案大小；0.8.175 起 HyperFrames 也會直接嵌入專案字型）。
-  - **只能在 `videos/<主題>/` 跑**：在 `examples/` 跑會把版控中的範本改成指向不在 git 裡的字檔，腳本會直接拒絕。
+  - **只能在 `output/<主題>/` 跑**：在 `examples/` 跑會把版控中的範本改成指向不在 git 裡的字檔，腳本會直接拒絕。
   - 需要 `pip install fonttools`（加裝 `brotli` 才會輸出 woff2，沒裝就維持 .otf）。
 
 ### D-13 🔧📎 翻牌卡的正反兩面被 `check` 判成文字重疊
@@ -234,7 +234,7 @@
 ### E-6 🌍 成片響度：一律正規化到 −15 LUFS
 - **現象**：02 範本用 0.8.181 算繪出來是 −16.2 LUFS（真峰值 −3.4 dBTP），各支片之間音量不一致；media-short-film 的片當時又是另一個目標（−16），兩個 repo 做出來的片放在一起忽大忽小。
 - **原因**：HyperFrames 不管整支片混音後的響度；它的 `normalize-audio` 只調單一音軌的 `data-volume`（預設 −16 LUFS），用來平衡旁白和 BGM，不是成片的響度。
-- **教訓（規範）**：每支片 `render` 完都跑 `python tools/loudness.py videos/<主題>/final.mp4 --apply` 再交片：整合響度 **−15 LUFS ±0.5**、真峰值 **≤ −1 dBTP**，只換音軌，視訊串流直接複製不重新編碼。不帶 `--apply` 只量測。02 範本實測：算繪原始 −16.2 LUFS → **−15.0 LUFS**、真峰值 −2.3 dBTP，一輪就達標，片長不變。
+- **教訓（規範）**：每支片 `render` 完都跑 `python tools/loudness.py output/<主題>/final.mp4 --apply` 再交片：整合響度 **−15 LUFS ±0.5**、真峰值 **≤ −1 dBTP**，只換音軌，視訊串流直接複製不重新編碼。不帶 `--apply` 只量測。02 範本實測：算繪原始 −16.2 LUFS → **−15.0 LUFS**、真峰值 −2.3 dBTP，一輪就達標，片長不變。
   - **要量編成 AAC 之後的真峰值**：AAC 編碼本身會把真峰值推高，只量編碼前的音檔會漏掉。工具每一輪都實際編成 AAC 再量，響度差就調增益、真峰值超標就壓低 4 倍超取樣限幅器的門檻，最多 8 輪（做法移植自 media-short-film 的 `make_film.py cut`）。8 輪還沒同時達標通常是某處爆音，聽一下再決定。
   - 旁白和 BGM 的相對音量仍照 E-2 處理；loudness.py 只管最後的整體響度。
   - **兩個影片 repo 統一 −15 LUFS**（2026-10-20 使用者決定）：media-short-film 的 `film.json` `target_lufs` 與 `make_film.py` 的預設也是 −15。YouTube 的播放基準是 −14，−15 會小聲約 1 dB，但給有配樂、音效、喊叫的片留了限幅餘裕。真峰值上限兩邊仍不同：本 repo −1 dBTP、media-short-film −1.2 dBTP。
@@ -303,10 +303,10 @@
 - **現象**：「十比十一少一」的「少」被念成 shào（應為 3 聲 shǎo）；「奇數位」的「奇」被念成 qí（應為 1 聲 jī）；03 範本的「GPT-4」念法不自然。
 - **原因**：Edge-TTS 不能用 SSML 指定讀音（`<phoneme>` 無效），只能從字面猜，多音字在數學語境常猜錯。
 - **教訓**：維護讀音替換表 `tts-lexicon.md`（Markdown 表格 `| 原文 | 改寫 | 說明 |`）：`generate_narration.py` 產生旁白前自動把原文換成念得對的寫法（例：奇數 → 基數、GPT-4 → GPT four），**只改送進 TTS 的文字，字幕與 SCRIPT.md 照常寫正確用字**。
-  - **表在本 repo 根目錄**（[tts-lexicon.md](tts-lexicon.md)，格式與規則寫在表的開頭）。腳本從影片資料夾往上找，專案在本 repo 的 `videos/` 裡就會讀到它；**專案 fork 到 repo 以外的地方時，設環境變數 `TTS_LEXICON` 指向它**。找不到會印「找不到 tts-lexicon.md」，不做替換。
+  - **表在本 repo 根目錄**（[tts-lexicon.md](tts-lexicon.md)，格式與規則寫在表的開頭）。腳本從影片資料夾往上找，專案在本 repo 的 `output/` 裡就會讀到它；**專案 fork 到 repo 以外的地方時，設環境變數 `TTS_LEXICON` 指向它**。找不到會印「找不到 tts-lexicon.md」，不做替換。
   - **四個 repo 各一份、內容逐位元組相同**：本 repo、[media-short-film](https://github.com/changyiwu/media-short-film)、[media-voice-clone](https://github.com/changyiwu/media-voice-clone)、[agent-speak](https://github.com/changyiwu/agent-speak)（`speak/`）。四個都公開，不能假設使用者每個都下載，所以各自要完整可用；放在同一層時腳本會**合併讀取**，同一個原文以本 repo 的為準。**改表時四份一起改**：改完任一份跑 `python ../media-short-film/tools/tts_lexicon.py --sync` 合併寫回四份，`--check` 只檢查。本機合併讀取時漏同步察覺不到，但只下載其中一個 repo 的人就會缺。（2026-10-20 曾把表只放在 media-short-film 當「主表」，結果單獨下載本 repo 的人完全沒有替換，連 03 範本自己的 GPT-4 都會念錯，所以改成每個 repo 各帶一份。）
   - 影片資料夾（或上層）放一份同名的 `tts-lexicon.md`（同樣的表格格式）就能加只對該片生效的條目，近的覆蓋遠的。對所有片都有用的條目加進 repo 根目錄的表。
-  - **產生旁白前先預檢**：`python tools/polyphone_check.py --project videos/<主題>` 會把旁白稿轉成簡體查 pypinyin（它的詞典收簡體詞，直接查繁體會把「長方形」猜成 zhǎng），標出兩種地方：讀音不是該字最常見讀法的詞（奇數的奇 jī、還原的還 huán），以及常錯清單裡的字、詞典沒收的詞（十一少一的少）。同一個詞只列一次、附頁碼，02 範本約 10 個詞。它列的讀音**不保證對**（實測「數一數」仍猜錯），是「產生旁白後該優先聽哪裡」的清單，不是自動判讀；「一」「不」的變調與輕聲不列。
+  - **產生旁白前先預檢**：`python tools/polyphone_check.py --project output/<主題>` 會把旁白稿轉成簡體查 pypinyin（它的詞典收簡體詞，直接查繁體會把「長方形」猜成 zhǎng），標出兩種地方：讀音不是該字最常見讀法的詞（奇數的奇 jī、還原的還 huán），以及常錯清單裡的字、詞典沒收的詞（十一少一的少）。同一個詞只列一次、附頁碼，02 範本約 10 個詞。它列的讀音**不保證對**（實測「數一數」仍猜錯），是「產生旁白後該優先聽哪裡」的清單，不是自動判讀；「一」「不」的變調與輕聲不列。
   - 改寫優先用**同音字**（奇 → 基）；找不到同音字就加字讓語境變明確（少一 → 少了一）。條目寫得越具體越安全，避免誤換其他詞。
   - 使用者回報念錯時：先加條目、重跑那幾頁、實際聽過，再寫進表裡的說明欄。改字會改變旁白長度與逐詞時間，那幾頁的動畫要依新的 `WordBoundary` 重對（H-2）。
 
@@ -314,7 +314,7 @@
 - **現象**：H-4 的讀音替換表是事前預防；片已經算繪完才聽到某頁念錯（多音字、聲調、英文詞），整頁重跑 TTS 會讓旁白長度改變，那頁的動畫時間（H-2）要重對。
 - **教訓**：用 `tools/fix_voice.py`，頁長與動畫都不必動：
   1. 在專案資料夾產生候選：`python generate_narration.py --page 3 --take A --rate=-5%`、`--take B --text "換了拼法的整句"`（同音字、加字讓語境明確，和 H-4 的改寫原則相同）。
-  2. 試聽：`python tools/fix_voice.py --project videos/<主題> audition --page 3 --clauses 1 2`，把念錯那個詞所在的子句（依標點切、從 0 起算）從「原本」與每個候選剪出來，串成一個檔。**用耳朵選**：ASR 抓得到念成別的詞，抓不到聲調錯。
+  2. 試聽：`python tools/fix_voice.py --project output/<主題> audition --page 3 --clauses 1 2`，把念錯那個詞所在的子句（依標點切、從 0 起算）從「原本」與每個候選剪出來，串成一個檔。**用耳朵選**：ASR 抓得到念成別的詞，抓不到聲調錯。
   3. 套用：`… apply --page 3 --take B`。候選整句等比伸縮回原句的語音長度、補回原句開頭的靜音、音量對齊，覆蓋 `page-03.mp3`（原檔備份成 `fix/page-03.before-fix.mp3`，`restore` 還原）。接著用 Edge-TTS 重抓兩邊的逐詞時間，把候選換算成伸縮後的秒數逐詞比對，**差超過 0.2 秒的詞會列出來**，那幾個 tween 照 H-3 的 `T(n, t)` 修；沒列出就不用動。
   4. 定案的改寫加進讀音替換表（H-4），下次重跑整支旁白也念得對。
 - **不要照停頓把候選切成子句再拼回去**：重念的停頓位置和原句不同，切點會落在字中間，結果漏字或重複（📎 實例）。整句等比伸縮在 ±5% 內聽不出來，超過 ±15% 工具會建議換一個候選。

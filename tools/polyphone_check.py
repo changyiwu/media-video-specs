@@ -1,7 +1,7 @@
 # 產生旁白前，把旁白稿裡容易被 TTS 念錯的多音字標出來（GOTCHAS H-4）
-# 執行（在 repo 根目錄；videos/<主題> 是有 generate_narration.py 的專案）：
-#   python tools/polyphone_check.py --project videos/<主題>
-#   python tools/polyphone_check.py --project videos/<主題> --all    常錯清單以外的多音字也一起檢查（比較吵）
+# 執行（在 repo 根目錄；output/<主題> 是有 generate_narration.py 的專案）：
+#   python tools/polyphone_check.py --project output/<主題>
+#   python tools/polyphone_check.py --project output/<主題> --all    常錯清單以外的多音字也一起檢查（比較吵）
 #
 # 掃的是「送進 TTS 的文字」：先套讀音替換表，已經改寫掉的詞（奇數 → 基數）不會再列。
 # 先轉簡體再查 pypinyin（它的詞典收的是簡體詞；直接查繁體時「長方形」猜 zhǎng、「銀行」猜 xíng），然後標出兩種地方：
@@ -66,7 +66,7 @@ def phrase_at(simp, i, phrases):
 
 def main():
     ap = argparse.ArgumentParser(description="旁白稿的多音字預檢")
-    ap.add_argument("--project", required=True, help="影片專案資料夾（videos/<主題>）")
+    ap.add_argument("--project", required=True, help="影片專案資料夾（output/<主題>）")
     ap.add_argument("--all", action="store_true", help="常錯清單以外的多音字也檢查「詞典沒收」這一項")
     a = ap.parse_args()
     try:

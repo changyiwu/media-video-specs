@@ -63,7 +63,7 @@ SCRIPT = [
 # （格式與規則寫在表的開頭：| 原文 | 改寫 | 說明 | 的 Markdown 表格）。只改送進 TTS 的文字，字幕不受影響。
 # 這份表有四份、內容相同（另外三份在 media-short-film、media-voice-clone、agent-speak/speak/）。
 # 找表順序，遠的在前、近的覆蓋遠的：同層另外三份（有就合併）→ 環境變數 TTS_LEXICON 指的表
-# → 從本資料夾往上每一層的 tts-lexicon.md（專案在 repo 的 videos/ 或 examples/ 裡時，repo 根目錄那份就在其中）。
+# → 從本資料夾往上每一層的 tts-lexicon.md（專案在 repo 的 output/ 或 examples/ 裡時，repo 根目錄那份就在其中）。
 # 專案 fork 到 repo 以外的地方時，設 TTS_LEXICON 指向 media-video-specs/tts-lexicon.md。
 
 LEX = "tts-lexicon.md"
@@ -282,7 +282,7 @@ def audit():
         for e in errors:
             print(f"  錯誤：{e}")
         raise SystemExit("\n時間軸不合規，先改 index.html 的 data-start／data-duration 再重跑 --audit")
-    print(f"\nOK 時間軸稽核通過，總長 {total:g}s。下一步（在 videos/<主題>/ 裡）：文字定稿後 python ../../tools/subset_fonts.py --project . "
+    print(f"\nOK 時間軸稽核通過，總長 {total:g}s。下一步（在 output/<主題>/ 裡）：文字定稿後 python ../../tools/subset_fonts.py --project . "
           "→ npx --yes hyperframes@0.8.181 check → npx --yes hyperframes@0.8.181 render -o final.mp4 "
           "→ python ../../tools/loudness.py final.mp4 --apply（GOTCHAS D-12／E-6）")
 

@@ -1,6 +1,6 @@
 # 把照片裁切、縮放並套成影片的配色，讓網路照片融進版面
 # 執行（在 repo 根目錄）：
-#   python tools/treat_images.py --project videos/<主題> [--bg "#1A1A1A" --fg "#FAF7EE"]
+#   python tools/treat_images.py --project output/<主題> [--bg "#1A1A1A" --fg "#FAF7EE"]
 #
 # 讀 <專案>/images.json，每張圖一個條目，輸出 assets/images/treated/<name>.jpg：
 # {
@@ -38,7 +38,7 @@ def hex_rgb(h):
 
 def main():
     ap = argparse.ArgumentParser(description="照片裁切、縮放並套成影片配色")
-    ap.add_argument("--project", required=True, help="影片專案資料夾（videos/<主題>）")
+    ap.add_argument("--project", required=True, help="影片專案資料夾（output/<主題>）")
     ap.add_argument("--bg", help="duotone 暗部顏色（#RRGGBB）")
     ap.add_argument("--fg", help="duotone 亮部顏色（#RRGGBB）")
     a = ap.parse_args()

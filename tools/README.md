@@ -1,6 +1,6 @@
 # tools/ — 三類影片共用的工具
 
-在 **repo 根目錄**執行，用 `--project videos/<主題>` 指向影片專案（或直接給成片路徑）。
+在 **repo 根目錄**執行，用 `--project output/<主題>` 指向影片專案（或直接給成片路徑）。
 都是一般的 Python 指令，四家 agent 一樣用；不要複製進每個範本，避免各份分叉。
 
 | 工具 | 做什麼 | 什麼時候用 | 需要 | 說明 |
@@ -15,24 +15,24 @@
 ## 出片順序
 
 ```bash
-python tools/subset_fonts.py --project videos/<主題>                 # 文字定稿後
+python tools/subset_fonts.py --project output/<主題>                 # 文字定稿後
 npx --yes hyperframes@0.8.181 check                                   # 在影片專案資料夾內
 npx --yes hyperframes@0.8.181 render -o final.mp4
-python tools/loudness.py videos/<主題>/final.mp4 --apply
+python tools/loudness.py output/<主題>/final.mp4 --apply
 ```
 
-`subset_fonts.py` 會改寫 `index.html`，只能在 `videos/<主題>/` 跑，在 `examples/` 會被拒絕（範本在版控裡，字檔不在）。
+`subset_fonts.py` 會改寫 `index.html`，只能在 `output/<主題>/` 跑，在 `examples/` 會被拒絕（範本在版控裡，字檔不在）。
 
 ## 修念錯字
 
 ```bash
-cd videos/<主題>
+cd output/<主題>
 python generate_narration.py --page 3 --take A --rate=-5%
 python generate_narration.py --page 3 --take B --text "換了拼法的整句"
 cd ../..
-python tools/fix_voice.py --project videos/<主題> audition --page 3 --clauses 1 2   # 串成試聽檔，用耳朵選
-python tools/fix_voice.py --project videos/<主題> apply --page 3 --take B
-python tools/fix_voice.py --project videos/<主題> restore --page 3                  # 反悔時還原
+python tools/fix_voice.py --project output/<主題> audition --page 3 --clauses 1 2   # 串成試聽檔，用耳朵選
+python tools/fix_voice.py --project output/<主題> apply --page 3 --take B
+python tools/fix_voice.py --project output/<主題> restore --page 3                  # 反悔時還原
 ```
 
 ## 來源

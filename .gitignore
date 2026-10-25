@@ -25,9 +25,6 @@ credentials.*
 # HyperFrames 的本機狀態與 check／snapshot 產物（每台電腦各自產生）
 **/.hyperframes/
 
-# 用本 repo 做出來的影片專案（腳本、旁白、成片都是使用者的作品，不進公開 repo）
-videos/
-
 # 字體（由 install_fonts.sh 動態下載；subset_fonts.py 的 *.subset.* 也在這裡）
 **/assets/fonts/
 
@@ -50,5 +47,5 @@ desktop.ini
 # Logs
 *.log
 
-# 產出一律放 output/，不進 git
+# 產出一律放 output/，不進 git（含用本 repo 做的影片專案 output/<主題>/：腳本、旁白、成片都是使用者的作品，不進公開 repo）
 output/

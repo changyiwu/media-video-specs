@@ -1,7 +1,7 @@
 # 量測成片響度，並正規化到 −15 LUFS（與 media-short-film 統一的目標；YouTube 的播放基準是 −14）、真峰值 ≤ −1 dBTP
 # 執行（在 repo 根目錄）：
-#   python tools/loudness.py videos/<主題>/final.mp4            只量測
-#   python tools/loudness.py videos/<主題>/final.mp4 --apply    正規化後覆蓋原檔（-o 另存）
+#   python tools/loudness.py output/<主題>/final.mp4            只量測
+#   python tools/loudness.py output/<主題>/final.mp4 --apply    正規化後覆蓋原檔（-o 另存）
 #
 # 規範在 GOTCHAS E-6：每支片 render 完都要跑 --apply，再交片。HyperFrames 的 `normalize-audio`
 # 只調單一音軌的 data-volume（旁白對 BGM 的相對音量），管不到整支片混音後的響度，所以要在成片上做。
@@ -84,7 +84,7 @@ def normalize(src, dest):
 
 def main():
     ap = argparse.ArgumentParser(description="成片響度量測與正規化（−15 LUFS／真峰值 ≤ −1 dBTP）")
-    ap.add_argument("video", help="成片（通常是 videos/<主題>/final.mp4）")
+    ap.add_argument("video", help="成片（通常是 output/<主題>/final.mp4）")
     ap.add_argument("--apply", action="store_true", help="正規化（預設覆蓋原檔）")
     ap.add_argument("-o", "--output", help="正規化結果另存到這裡，不覆蓋原檔")
     a = ap.parse_args()
