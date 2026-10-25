@@ -80,7 +80,7 @@ media-video-specs/
 | **Claude Code**（CLI + Desktop）| `CLAUDE.md` → `@AGENTS.md` | `~/.claude/skills/` | 完整支援 |
 | **Codex**（CLI）| ✅ 原生讀 `AGENTS.md` | `~/.agents/skills/` | 完整支援 |
 | **OpenCode**（CLI）| ✅ 透過 `opencode.json` 引導 | `~/.config/opencode/skills/` | 已附 opencode.json |
-| **Antigravity 2.x**（Google 桌面 Agent 應用，非 IDE）| ⚠️ 部分，必要時手動貼檔 | `~/.gemini/antigravity/skills/` | 需在 App 內確認 skill 已載入 |
+| **Antigravity 2.x**（Google 桌面 Agent 應用，非 IDE）| ⚠️ 部分，必要時手動貼檔 | `~/.gemini/config/skills/` | 需在 App 內確認 skill 已載入 |
 | **Web-only agents** | ❌ 無 shell | n/a | 只能參考 specs，無法跑 install |
 
 ---

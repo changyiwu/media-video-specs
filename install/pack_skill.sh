@@ -35,7 +35,7 @@ skill_root() {
     claude)      echo "$HOME/.claude/skills" ;;
     codex)       echo "$HOME/.agents/skills" ;;
     opencode)    echo "$HOME/.config/opencode/skills" ;;
-    antigravity) echo "$HOME/.gemini/antigravity/skills" ;;
+    antigravity) echo "$HOME/.gemini/config/skills" ;;
   esac
 }
 
@@ -108,7 +108,7 @@ EOF
       ;;
     antigravity)
       echo "    ℹ️  Antigravity 2.x 是獨立桌面 Agent 應用（不是 IDE）"
-      echo "        請在 App 內確認 ~/.gemini/antigravity/skills/ 的 skill 已被載入"
+      echo "        請在 App 內確認 ~/.gemini/config/skills/ 的 skill 已被載入"
       echo "        若無自動偵測，請手動將 $META_FILE 內容貼入 Antigravity 的 Custom Agent 設定"
       ;;
   esac

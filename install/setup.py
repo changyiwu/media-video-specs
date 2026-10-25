@@ -191,7 +191,7 @@ SKILL_PATHS = {
     "claude":      Path.home() / ".claude" / "skills",
     "codex":       Path.home() / ".agents" / "skills",
     "opencode":    Path.home() / ".config" / "opencode" / "skills",
-    "antigravity": Path.home() / ".gemini" / "antigravity" / "skills",
+    "antigravity": Path.home() / ".gemini" / "config" / "skills",
 }
 
 TYPE_META = {

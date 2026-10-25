@@ -15,7 +15,7 @@
 | **Claude Code**（CLI / Desktop）| 由 `CLAUDE.md` import `AGENTS.md`，再依指示讀本檔 | `~/.claude/skills/<name>/SKILL.md` | 只讀 `CLAUDE.md`，不讀 `AGENTS.md` |
 | **Codex**（CLI）| ✅ 原生讀 `AGENTS.md` | `~/.agents/skills/<name>/SKILL.md`（或專案內 `.agents/skills/`）| YAML frontmatter 格式與 Claude 相同 |
 | **OpenCode**（CLI）| 由 `opencode.json` 的 `instructions` 引導 | `~/.config/opencode/skills/<name>/` 或 `.opencode/skills/` | 已附 `opencode.json` 自動引導 |
-| **Antigravity 2.x**（Google 桌面 Agent 應用，**不是 IDE**）| ⚠️ 不一定自動讀，必要時請使用者貼本檔給你 | `~/.gemini/antigravity/skills/<name>/` 或 `.agents/skills/` | 它是獨立的 agent 管理應用（可另外把外掛裝進你的編輯器），skill 放進上述目錄後在 App 內確認有被載入 |
+| **Antigravity 2.x**（Google 桌面 Agent 應用，**不是 IDE**）| ⚠️ 不一定自動讀，必要時請使用者貼本檔給你 | `~/.gemini/config/skills/<name>/` 或 `.agents/skills/` | 它是獨立的 agent 管理應用（可另外把外掛裝進你的編輯器），skill 放進上述目錄後在 App 內確認有被載入 |
 
 ### CLI vs Desktop 差異
 
@@ -244,7 +244,7 @@ python install/setup.py pack <skill-name> <01|02|03> --target=claude
 2. 產出 `SKILL.md`（含觸發詞、流程、引用本 repo 的 spec）
 3. 告訴使用者觸發詞（如「做一支教學影片」「做社群科普」）
 
-安裝路徑見階段 0 的對照表。**OpenCode** 需確認 config 的 `skills` 路徑包含該目錄；**Antigravity 2.x** 要確認 `~/.gemini/antigravity/skills/` 下的 skill 有被 App 載入（它是獨立桌面應用，不是 IDE）。
+安裝路徑見階段 0 的對照表。**OpenCode** 需確認 config 的 `skills` 路徑包含該目錄；**Antigravity 2.x** 要確認 `~/.gemini/config/skills/` 下的 skill 有被 App 載入（它是獨立桌面應用，不是 IDE）。
 
 ### 結束
 
