@@ -35,7 +35,7 @@ Write-Host "3/3  準備 HyperFrames（含算繪用 Chrome）"
 # HyperFrames 一律用 npx 執行，套件落在 npm 快取，不會在雲端硬碟上的專案裡產生 node_modules（GOTCHAS D-1）
 $NodeMajor = [int]((node --version).TrimStart('v').Split('.')[0])
 if ($NodeMajor -lt 22) { throw "Node.js 版本是 $(node --version)，HyperFrames 需要 22 以上" }
-if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) { throw "找不到 ffmpeg：winget install Gyan.FFmpeg" }
+if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) { throw "找不到 ffmpeg：winget install Gyan.FFmpeg（Windows on ARM 先試 winget install BtbN.FFmpeg.GPL.9.0 --architecture arm64，被 Smart App Control 擋再改裝 Gyan.FFmpeg）" }
 npx --yes hyperframes@0.8.181 --version
 npx --yes hyperframes@0.8.181 browser ensure
 

@@ -93,7 +93,7 @@
 | pip | `python -m ensurepip --upgrade` |
 | edge-tts | `pip install edge-tts` |
 | Node.js | 提示去 https://nodejs.org（不自動裝，需 22 以上）|
-| ffmpeg | Win: `winget install Gyan.FFmpeg`；Mac: `brew install ffmpeg`；Linux: `apt install ffmpeg` |
+| ffmpeg | Win x64: `winget install Gyan.FFmpeg`；Win ARM64: 先試 `winget install BtbN.FFmpeg.GPL.9.0 --architecture arm64`，跑 `ffmpeg -version` 若回「應用程式控制原則已封鎖此檔案」（Smart App Control）就 `winget uninstall BtbN.FFmpeg.GPL.9.0` 改裝 `Gyan.FFmpeg`（x64，2026-10-28 LT-YI-RS 實測 ARM64 版被擋）；Mac: `brew install ffmpeg`；Linux: `apt install ffmpeg` |
 | HyperFrames + 算繪用 Chrome | 跑 `install/setup_hyperframes.sh`（或 `python install/setup.py hyperframes`）。一律用 `npx` 執行，不在雲端硬碟的專案裡 `npm install`（GOTCHAS D-1） |
 | 源石黑體 | 跑 `install/install_fonts.sh`（從 ButTaiwan/genseki-font 下載，並複製進每個範本的 `assets/fonts/`）|
 | kokoro-onnx | `pip install kokoro-onnx soundfile`（或裝在獨立 venv 再設 `HYPERFRAMES_PYTHON`，見 GOTCHAS H-1）|

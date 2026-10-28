@@ -152,7 +152,7 @@ def cmd_hyperframes():
     if node_major() < 22:
         print("X 需要 Node.js 22 以上（https://nodejs.org）"); sys.exit(1)
     if not have("ffmpeg"):
-        print("X 找不到 ffmpeg（Windows: winget install Gyan.FFmpeg；macOS: brew install ffmpeg）"); sys.exit(1)
+        print("X 找不到 ffmpeg（Windows: winget install Gyan.FFmpeg（Windows on ARM 先試 winget install BtbN.FFmpeg.GPL.9.0 --architecture arm64，被 Smart App Control 擋再改裝 Gyan.FFmpeg）；macOS: brew install ffmpeg）"); sys.exit(1)
     subprocess.run(npx("--yes", HF, "--version"), check=True)
     subprocess.run(npx("--yes", HF, "browser", "ensure"), check=True)
     print("✓ HyperFrames 就緒。在範本資料夾內：npx --yes hyperframes@0.8.181 preview｜check｜render -o final.mp4")

@@ -11,7 +11,7 @@ need() { command -v "$1" >/dev/null 2>&1 || { echo "✗ 找不到 $1：$2" >&2; 
 
 need node   "請先安裝 Node.js 22 以上（https://nodejs.org）"
 need npx    "npx 隨 Node.js 附帶，請重新安裝 Node.js"
-need ffmpeg "HyperFrames 本機算繪需要 FFmpeg（Windows: winget install Gyan.FFmpeg；macOS: brew install ffmpeg）"
+need ffmpeg "HyperFrames 本機算繪需要 FFmpeg（Windows: winget install Gyan.FFmpeg（Windows on ARM 先試 winget install BtbN.FFmpeg.GPL.9.0 --architecture arm64，被 Smart App Control 擋再改裝 Gyan.FFmpeg）；macOS: brew install ffmpeg）"
 
 NODE_MAJOR="$(node -p 'process.versions.node.split(".")[0]')"
 if [ "$NODE_MAJOR" -lt 22 ]; then
