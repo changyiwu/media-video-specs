@@ -46,6 +46,11 @@
 - **原因**：文案沒壓縮、強迫換行。
 - **教訓**：**字幕壓成單行，每段 ≤ 25 字，以不換行為最大原則**。寧可縮短文案，也不要兩行字幕。太長就拆成兩個 beat。
 
+### B-2 🌍📎 不要拿 Whisper 對字幕
+- **現象**：語音辨識出來的字幕是簡體字，念成國字的數字變成阿拉伯數字，和畫面的寫法對不上。
+- **原因**：Whisper 只聽聲音，不知道稿子原本怎麼寫。
+- **教訓**：旁白稿就在手上，字幕直接用稿子的文字，只需要時間：逐詞秒數用 `WordBoundary`（H-2），子句時間用「稿子的標點 + ffmpeg 偵測停頓」（`tools/fix_voice.py`、`tools/review_times.py` 都這樣做）。
+
 ---
 
 ## C. GSAP 時間軸（範本的動畫寫法）
@@ -163,7 +168,7 @@
 ### D-8 🌍 `check` 才是出片前的關卡，`render` 不會替你擋缺檔
 - **現象**：照片缺檔照樣算出一支 mp4，畫面上是空白色塊；或算了好幾分鐘才失敗。
 - **原因**：`render` 遇到 404 的圖片不會中止；頁面 script 丟錯雖然會擋，但要等整支擷取完才報。
-- **教訓**：流程固定為 `generate_narration.py`（稽核）→ **`npx --yes hyperframes@0.8.181 check` 必須顯示 `Check passed`** → `npx --yes hyperframes@0.8.181 render -o final.mp4`。`check` 會擋下：缺素材（404、`audio_src_not_found`）、分階動畫守衛（C-7）、交叉淡化時文字疊在一起（`content_overlap`）。
+- **教訓**：流程固定為 `generate_narration.py`（稽核）→ **`npx --yes hyperframes@0.8.181 check` 必須顯示 `Check passed`** → 審片循環（D-10）→ `npx --yes hyperframes@0.8.181 render -o final.mp4`。`check` 會擋下：缺素材（404、`audio_src_not_found`）、分階動畫守衛（C-7）、交叉淡化時文字疊在一起（`content_overlap`）。
 
 ### D-9 🔧 範本會有的固定警告，可忽略
 - `nested_structure_needs_subcomposition`、`composition_file_too_large`、`studio_missing_editable_id`：範本刻意把整支片寫在單一 `index.html`，方便 fork 與閱讀，不影響出片。
@@ -178,12 +183,13 @@
 - **升級版本**：先在三支範本跑過 `check`／`render`，再用 `git grep -n <舊版本號>` 把文件、腳本、範本、`tools/` 裡的版本號一起改（`install/setup.py` 集中在 `HF` 常數；中文檔名要用 `git grep -lz … | xargs -0`，不然 specs 底下的檔會被漏掉）。驗證內容寫進 C 節開頭的「驗證版本」，舊版的實測陳述不要跟著改號。
 - **不要改成 `@latest` 或全域安裝**：HyperFrames 一天發好幾版（0.8.171 → 0.8.181 只隔兩天），不鎖版本時同一支片前後可能用不同版本算繪，出問題分不清是自己改壞還是工具變了。有需要的修正或開新片前再照上一條升級。
 
-### D-10 🌍 用 `snapshot` 逐頁目視驗收，`check` 抓不到排版問題
-- **現象**：`check` 通過，但畫面上有：封面標題斷行後行尾懸著一個「・」、文氏圖標籤貼著數字、時間軸右端的「分」被切掉、卡片下半部大片留白。
-- **原因**：`check` 只驗缺檔、時間軸、文字重疊與對比，不判斷「好不好看」。
-- **教訓**：出片前對**每頁頁尾前約 1.6 秒**（動畫都跑完的時刻）拍一張：`npx --yes hyperframes@0.8.181 snapshot --at <秒數,…> --no-end --describe false -o <資料夾>`，看它產生的 contact sheet；可疑處再用 `--zoom "x,y,w,h"` 放大。全片 16 頁拍一輪約 1 分鐘，比算繪完才發現便宜得多。
+### D-10 🌍 審片循環：逐句看 contact sheet，`check` 抓不到排版和對時間的問題
+- **現象**：`check` 通過，但畫面上有：封面標題斷行後行尾懸著一個「・」、文氏圖標籤貼著數字、時間軸右端的「分」被切掉、卡片下半部大片留白；或旁白念完了，該出現的東西還沒出現。
+- **原因**：`check` 只驗缺檔、時間軸、文字重疊與對比，不判斷「好不好看」，也不知道旁白在講什麼。只看每頁動畫跑完的樣子，中途的錯位與對不上旁白都看不到。
+- **教訓**：出片前照 [tools/review-loop.md](tools/review-loop.md) 跑：`render --quality draft -o renders/draft.mp4` → `python tools/sheet.py --project output/<主題>` → 逐張對照檢查表 → 修 → 重來。時間點由 `tools/review_times.py` 算：**每個旁白子句結束前 0.15 秒**（念到這句時畫面該落定），加上**每頁頁尾前 1.6 秒**（動畫都跑完的時刻）。`draft-table.txt` 列出每格對應的旁白。實測〈為什麼負負得正〉4:49、13 頁：136 個時間點、17 張 sheet；12 核心桌機算繪草稿約 2 分鐘、抽格約 15 秒。
+- **只改幾頁的排版，不必重算草稿**：`python tools/review_times.py --project output/<主題> --pages` 給每頁落定時刻，`npx --yes hyperframes@0.8.181 snapshot --at <秒數,…> --no-end --describe false -o <資料夾>` 拍（全片 16 頁約 1 分鐘），看它產生的 contact sheet；可疑處用 `--zoom "x,y,w,h"` 放大。動到時間或動畫就回到草稿。
 - **同類元素放在一起比**：章節卡、標籤、圖說這類每頁都有的元素，把各頁的截圖並排看大小與位置是否一致，不一致就統一成同一個值（📎 實例：章節卡在不同頁分別是 6.8cqw 與 2.6cqw）。
-- **單張異常先重拍再判斷**：0.8.181 實測過一次第一張拍成空白頁，重拍兩次都正常；同一個時間點連續兩次都異常才是真的問題。後來連兩輪都是第一張空白，所以 `--at` 的**第一個時間點放一個不需要驗的時刻**（或重複一次第二個），要驗的頁別排第一張。
+- **`snapshot` 單張異常先重拍再判斷**：0.8.181 實測過一次第一張拍成空白頁，重拍兩次都正常；同一個時間點連續兩次都異常才是真的問題。後來連兩輪都是第一張空白，所以 `--at` 的**第一個時間點放一個不需要驗的時刻**（或重複一次第二個），要驗的頁別排第一張；`--pages` 印出的第一個時間點已經重複一次。
 
 ### D-12 🌍 字型瘦身：出片前把字型切成片中用到的字
 - **現象**：每頁都載入源石黑體三個字重，各約 15 MB；每個算繪用的 Chrome worker 都要各自載入一次，專案搬移、上傳也很重。
@@ -201,6 +207,21 @@
 - **不能放在有計時的元素裡面**：背景圖層本身是 `class="clip"` 時，`<video>` 要放在它**後面（同層）**，放在裡面播放的畫面會錯；lint 報 `video_nested_in_timed_element`。
 - **影片比那一頁短，播完會留下空框**：clip 播完就被隱藏（C-1），在影片結束前用 tween 把整張影片卡淡出。
 - 影片一律 `muted`，聲音另開 `<audio>`（C-6）。以上兩條 lint 規則名稱已在 0.8.181 的套件裡確認存在；三條現象引自 📎 claude-motion-explainer。
+
+### D-15 🔧📎 AI 影片片段（H3）：只放拍不到、又沒有授權素材的畫面
+- **什麼時候用**：社群科普片（規範 6.6），Tier 1～4 都找不到、又確實需要動態的畫面：開場鉤子、一個「拍不到」的動作、收尾情緒，每支 2–4 段。需要精確數字或方向的畫面交給 SVG；真實人物、真實品牌不要生。教學片（02）與活動紀錄（01）不需要。
+- **工具**：`python tools/h3_runner.py --check`，再 `… spec.json --out assets/videos/gen/<name>`，走 HTTP 呼叫 ComfyUI，只用標準函式庫。spec 加 `"draft": true`（Lightning LoRA、4 步）先看動作，定稿拿掉。第一格一定要給（`first_frame`），片段才會和片子同風格配色。
+- **檢查**：片段不能憑 log 判斷，一定要看：`python tools/sheet.py --video <clip.mp4> --from 0 --to 5 --every 0.7 --out <資料夾>`，不合格換 seed。放進片子照 D-14，畫面標「AI 生成影片」。
+- **硬體**：上游 RTX 5090 實測生成時約用 26 GB VRAM，5 秒 draft 約 76 秒。更小的顯卡本 repo 未實測，`tools/hw_check.py` 會提醒。沒有環境時的退路：把 `prompt.txt` 和第一格交給使用者、用靜態圖代替，或不放。`h3_runner.py` 本 repo 只驗過 `--check`（連不上時的訊息）、`--lint`、`--dry-run`，尚未實際生成過。
+- **模型授權**：MiniMax H3 Community License，模型與產出都受它約束，用之前先讀。
+
+### D-16 🔧📎 H3 的動作時間點可以拿來對旁白
+- **現象**：「噴氣停掉 → 落地」放在 5 秒的片段裡，大約 3 秒時落地。
+- **教訓**：先用 contact sheet 找出片段裡動作發生的秒數，把影片卡的出現時間往前推，讓動作剛好落在旁白念到的詞上（H-2），不必為了對時間重新生成。
+
+### D-17 🔧📎 H3 會「補」被遮住的零件
+- **現象**：車子懸浮時輪子被噴氣擋住，落地後輪子才長出來；轉彎時車身微微變形。
+- **教訓**：抽格逐張看（D-15）。當半透明背景或小卡片可以接受，當主畫面就換 seed 重跑。
 
 ---
 
@@ -295,7 +316,7 @@
   1. 換算語速：Edge-TTS 的 rate 是相對正常速度，`-10%` 的 1.25 倍 = 0.9 × 1.25 ≈ 1.13 → `+13%`。最好一開始就避免：教學片先問是新學（`-10%`、留白 2～4 秒）還是複習（`+35%`、留白 1～2 秒），國一複習片就是從 -10% 被要求加快了三次才定在 +35%。
   2. 重跑 `generate_narration.py`，用 ffprobe 量每頁新長度，頁長取 `ceil(旁白 + 2.2)`（tail 落在 2–4s）。
   3. 文字沒改的頁：頁內動畫秒數乘上「新旁白長 ÷ 舊旁白長」。範本寫法是 `const T = (n, t) => S(n) + t * SPD[n]`，把 `S(n) + 秒數` 全換成 `T(n, 秒數)`，只維護一張縮放表。改了文字的頁照 H-2 重拿逐詞時間。
-  4. `--audit` → `check` → `snapshot` 逐頁看（D-10）。
+  4. `--audit` → `check` → 審片循環（D-10）。
 - 換聲音也一樣：同一份稿子，女聲 HsiaoChen 比男聲 YunJhe 略長，02 範本換女聲後有 4 頁 tail 掉到 2 秒以下，要各加 1 秒。
 - **換聲音時比語速縮放更準的做法**：同一段文字，兩種聲音的 `WordBoundary` 斷詞完全相同（實測 16 頁逐詞一致），把「舊聲音詞秒數 → 新聲音詞秒數」做成每頁一張對照表，`T(n, t)` 用分段線性內插換算，動畫就精確落在新聲音念到的字上，不必重排任何秒數。
 
@@ -340,7 +361,7 @@
 - [ ] 已先寫 SCRIPT.md 給使用者確認？（A-1）
 - [ ] 問清楚學生學到第幾冊第幾章、新學還是複習（語速）、能不能暫停？（A-4 / A-5 / H-3）
 - [ ] 已展示 DESIGN.md 視覺規範？（A-2 / A-3）
-- [ ] 字幕單行 ≤ 25 字、不換行？（B-1）
+- [ ] 字幕單行 ≤ 25 字、不換行？用的是稿子原文，不是語音辨識？（B-1 / B-2）
 - [ ] HyperFrames 用 `npx` 跑，沒在雲端硬碟的專案裡 `npm install`？（D-1）
 - [ ] 專案內有 `assets/fonts/`，`@font-face` 不用 `../`？（D-2 / C-5）
 - [ ] 每頁與每段旁白的 `data-start`／`data-duration` 寫在標籤上，`--audit` 通過？（D-3）
@@ -349,7 +370,7 @@
 - [ ] 每個 `<audio>` 都有 `id`？（E-1）
 - [ ] 裝飾性的持續動畫標了 `data: 'ambient'`，教學 reveal 沒標？（C-7）
 - [ ] `npx --yes hyperframes@0.8.181 check` 顯示 `Check passed` 才 `render`？（D-8）
-- [ ] 用 `snapshot` 逐頁看過？SVG 資料點進場只用 opacity？（D-10 / C-8）
+- [ ] 跑過審片循環，看過目前這一版的每張 contact sheet？SVG 資料點進場只用 opacity？（D-10 / C-8）
 - [ ] 旁白裡的多音字、英文詞查過讀音替換表 `tts-lexicon.md`，念錯的已加條目？（H-4）
 - [ ] 旁白稿的數字寫國字、字幕寫阿拉伯數字？先試聽前兩頁才產生整支？（H-6 / H-7）
 - [ ] 所有文字定稿後才跑 `tools/subset_fonts.py`，改過字就重跑？（D-12）
@@ -365,4 +386,5 @@
 - 流程類（A）、字幕（B）：跨 agent 共通教訓
 - GSAP 時間軸（C）與 HyperFrames 算繪（D）：HyperFrames 框架規則 + 把三支範本從 Playwright 遷移到 HyperFrames 時的實測
 - FFmpeg / Windows / Python：**Antigravity** 在 Windows 實跑時詳細記錄（含確切錯誤碼與修法）
-- 標 📎 的條目、D-12 字型瘦身、H-5 修唸錯字：引自 [mathruffian-dot/claude-motion-explainer-video](https://github.com/mathruffian-dot/claude-motion-explainer-video) 的 `lessons.md` 與工具（MIT License），`tools/` 底下的對應腳本改寫成本 repo 的管線後實測
+- 標 📎 的條目、D-10 審片循環、D-12 字型瘦身、D-15 H3 片段、H-5 修唸錯字：引自 [mathruffian-dot/claude-motion-explainer-video](https://github.com/mathruffian-dot/claude-motion-explainer-video) 的 `lessons.md`（B-2 是第 13 條、D-16 是第 27 條、D-17 是第 28 條）、`ai-video.md` 與工具（MIT License），`tools/` 底下的對應腳本改寫成本 repo 的管線；未實測的部分寫在該條目裡
+- 審片循環的流程與檢查表（`tools/review-loop.md`）：原出處 [whaleyxbt/claude-motion](https://github.com/whaleyxbt/claude-motion) 的 `review-loop`（MIT License）

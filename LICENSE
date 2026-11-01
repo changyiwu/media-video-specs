@@ -42,8 +42,10 @@ THIRD-PARTY ASSETS:
 
 THIRD-PARTY CODE (adapted and included in this repo):
 
-- tools/subset_fonts.py, tools/fix_voice.py, tools/find_images.py and
-  tools/treat_images.py are adapted from claude-motion-explainer-video
+- tools/subset_fonts.py, tools/fix_voice.py, tools/find_images.py,
+  tools/treat_images.py, tools/review_times.py, tools/sheet.py,
+  tools/h3_runner.py and tools/hw_check.py are adapted from
+  claude-motion-explainer-video
   (https://github.com/mathruffian-dot/claude-motion-explainer-video).
   GOTCHAS.md entries marked 📎 summarise that project's lessons.md.
   Original licence:
@@ -51,6 +53,32 @@ THIRD-PARTY CODE (adapted and included in this repo):
     MIT License
 
     Copyright (c) 2026 mathruffian-dot
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+- tools/review-loop.md and tools/sheet.py derive from the review-loop skill of
+  whaleyxbt/claude-motion (https://github.com/whaleyxbt/claude-motion), by way
+  of claude-motion-explainer-video. Original licence:
+
+    MIT License
+
+    Copyright (c) 2026 whaleyxbt
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -79,3 +107,14 @@ THIRD-PARTY TOOLS (fetched at runtime via npx / CDN, not distributed with this r
   Standard License.
 
 - KaTeX (https://katex.org), loaded from cdn.jsdelivr.net under the MIT License.
+
+THIRD-PARTY MODELS AND SERVERS (optional, installed by the user, not distributed
+with this repo):
+
+- MiniMax H3 (https://github.com/MiniMax-AI/MiniMax-H3), used through
+  tools/h3_runner.py. The model and its outputs are under the MiniMax H3
+  Community License; read it before use, including its use restrictions.
+  Default model files: https://huggingface.co/Comfy-Org/MiniMax-H3
+
+- ComfyUI (https://github.com/Comfy-Org/ComfyUI), GPL-3.0. tools/h3_runner.py
+  only talks to it over its HTTP API and includes none of its code.

@@ -92,7 +92,7 @@ else
   echo "MISS pypinyin+opencc (選用，pip install pypinyin opencc-python-reimplemented；只有多音字預檢要用)"
 fi
 if python -c "import PIL" >/dev/null 2>&1 || python3 -c "import PIL" >/dev/null 2>&1; then
-  echo "OK  pillow (選用)"
+  echo "OK  pillow"
 else
-  echo "MISS pillow (選用，pip install pillow；只有照片套色要用)"
+  echo "MISS pillow（pip install pillow；審片 contact sheet 與照片套色要用）"
 fi

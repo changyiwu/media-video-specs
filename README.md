@@ -34,7 +34,7 @@ media-video-specs/
 │   ├── 02-factors-multiples/
 │   └── 03-ai-context/
 ├── templates/                   ← 發布資訊範本（YouTube／FB／IG／Threads 文案）
-├── tools/                       ← 三類共用的出片工具（字型瘦身、成片響度、修念錯字、授權照片）
+├── tools/                       ← 三類共用的出片工具（字型瘦身、審片、成片響度、修念錯字、授權照片、H3 片段、硬體檢查）
 └── install/                     ← 自動安裝工具
     ├── check_env.sh
     ├── install_fonts.sh         ← 源石黑體（從 ButTaiwan 下載）
@@ -138,7 +138,7 @@ python install/setup.py pack my-video 02 --target=claude
 **本專案的三類影片規範、範本與 bootstrap 流程，原作者是「三師爸」。**
 本 repo 是在其作品基礎上的衍生版本，主要改動是把原本以單一 agent 為預設的設計，改成 Claude Code／Codex／OpenCode／Antigravity 四家對等支援。原始著作權聲明保留於 [LICENSE](LICENSE)。
 
-其他致謝：[李俊儀教授](https://www.facebook.com/profile.php?id=100007283099373)（SOIL 教學心法） · [林長揚](https://www.facebook.com/changyanglin)（簡報 30 原則） · [ButTaiwan/genseki-font](https://github.com/ButTaiwan/genseki-font)（源石黑體） · [Unsplash](https://unsplash.com) · [edge-tts](https://github.com/rany2/edge-tts) · [HyperFrames](https://github.com/heygen-com/hyperframes)（HeyGen，算繪引擎） · [GSAP](https://gsap.com)（動畫時間軸） · [claude-motion-explainer](https://github.com/mathruffian-dot/claude-motion-explainer-video)（`tools/` 的字型瘦身、修念錯字、授權照片工具與 GOTCHAS 📎 條目的來源，MIT） · [Wikimedia Commons](https://commons.wikimedia.org)（授權照片）
+其他致謝：[李俊儀教授](https://www.facebook.com/profile.php?id=100007283099373)（SOIL 教學心法） · [林長揚](https://www.facebook.com/changyanglin)（簡報 30 原則） · [ButTaiwan/genseki-font](https://github.com/ButTaiwan/genseki-font)（源石黑體） · [Unsplash](https://unsplash.com) · [edge-tts](https://github.com/rany2/edge-tts) · [HyperFrames](https://github.com/heygen-com/hyperframes)（HeyGen，算繪引擎） · [GSAP](https://gsap.com)（動畫時間軸） · [claude-motion-explainer](https://github.com/mathruffian-dot/claude-motion-explainer-video)（`tools/` 的字型瘦身、修念錯字、授權照片、審片、H3 片段、硬體檢查工具與 GOTCHAS 📎 條目的來源，MIT） · [whaleyxbt/claude-motion](https://github.com/whaleyxbt/claude-motion)（審片循環原出處，MIT） · [Wikimedia Commons](https://commons.wikimedia.org)（授權照片）
 
 ---
 

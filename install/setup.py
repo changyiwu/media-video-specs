@@ -85,6 +85,7 @@ def cmd_check():
         ("ffprobe", have("ffprobe")),
         # tools/subset_fonts.py 出片前字型瘦身（GOTCHAS D-12）
         ("fonttools", have_pkg("fonttools")),
+        ("pillow", have_pkg("pillow")),
         ("node >= 22", node_major() >= 22),
         ("fonts", (font_target_dir() / FONT_FILES[0]).exists()),
         # HyperFrames 只認專案資料夾內的字檔，算繪靠的是範本裡這幾份（GOTCHAS D-2）
@@ -95,8 +96,8 @@ def cmd_check():
     print("=== media-video-specs 環境檢查 ===")
     for name, ok in rows:
         print(f"{'OK  ' if ok else 'MISS'} {name}")
-    # 選用：brotli 讓字型瘦身輸出 woff2；pillow 給 tools/treat_images.py 照片套色
-    for pkg, why in (("brotli", "沒有也能瘦身，只是維持 .otf"), ("pillow", "只有照片套色要用"),
+    # 選用：brotli 讓字型瘦身輸出 woff2
+    for pkg, why in (("brotli", "沒有也能瘦身，只是維持 .otf"),
                      ("pypinyin", "只有多音字預檢要用"), ("opencc-python-reimplemented", "只有多音字預檢要用")):
         print(f"{'OK  ' if have_pkg(pkg) else 'MISS'} {pkg}（選用，{why}）")
     missing = [n for n, ok in rows if not ok]
@@ -165,7 +166,7 @@ def cmd_install_edge_tts():
     subprocess.run([sys.executable, "-m", "pip", "install", "edge-tts"], check=True)
 
 
-# Edge-TTS 加上 tools/ 用到的套件：fonttools＋brotli（字型瘦身）、pillow（照片套色）、pypinyin＋opencc（多音字預檢）
+# Edge-TTS 加上 tools/ 用到的套件：fonttools＋brotli（字型瘦身）、pillow（contact sheet、照片套色）、pypinyin＋opencc（多音字預檢）
 PY_DEPS = ["edge-tts", "fonttools", "brotli", "pillow", "pypinyin", "opencc-python-reimplemented"]
 
 
@@ -249,8 +250,9 @@ target: {t}
 6. 跑該 spec 第 9 / 11 章 checklist
 7. 生成旁白並稽核時間軸：`python generate_narration.py`（Edge-TTS；`--tts kokoro` 為備案）
 8. 文字定稿後 `python {REPO}/tools/subset_fonts.py --project <工作目錄>` 瘦身字型，再 `npx --yes hyperframes@0.8.181 check`，必須通過（缺素材、動畫被切掉都會在這裡擋下）
-9. `npx --yes hyperframes@0.8.181 render -o final.mp4`，再 `python {REPO}/tools/loudness.py final.mp4 --apply`（成片 −15 LUFS）
-10. 給使用者預覽 → 確認後存檔；這時才聽出念錯字，用 `{REPO}/tools/fix_voice.py` 修，不要整頁重跑 TTS
+9. 跑審片循環：照 `{REPO}/tools/review-loop.md` 輸出草稿、`python {REPO}/tools/sheet.py --project <工作目錄>` 拼 contact sheet、逐張對照檢查表，修到一輪沒問題
+10. `npx --yes hyperframes@0.8.181 render -o final.mp4`，再 `python {REPO}/tools/loudness.py final.mp4 --apply`（成片 −15 LUFS）
+11. 給使用者預覽 → 確認後存檔；這時才聽出念錯字，用 `{REPO}/tools/fix_voice.py` 修，不要整頁重跑 TTS
 
 ## 規範路徑
 `{REPO}/specs/{vtype}-*.md`
@@ -268,7 +270,7 @@ target: {t}
 - 字幕單行 ≤ 25 字，不換行
 - 開工先問清楚：學生目前學到第幾冊第幾章（非教學片則問觀眾看片時的階段）、新學還是複習（新學語速 -10%、留白 2～4 秒；複習 +35%、留白 1～2 秒）、能不能暫停（預設從頭播到尾，不做按暫停練習頁）
 - 旁白預設 Edge-TTS 女聲 zh-TW-HsiaoChenNeural
-- 共用工具（字型瘦身、響度、修念錯字、授權照片）說明在 `{REPO}/tools/README.md`
+- 共用工具（字型瘦身、審片、響度、修念錯字、授權照片、H3 片段、硬體檢查）說明在 `{REPO}/tools/README.md`
 """, encoding="utf-8")
         print(f"✓ {t} → {skill_dir}")
 

@@ -49,10 +49,15 @@ media-video-specs/
 ├── tools/                       ← 三類共用的出片工具（用 --project output/<主題> 呼叫，見 tools/README.md）
 │   ├── subset_fonts.py          ← 字型瘦身（GOTCHAS D-12）
 │   ├── loudness.py              ← 成片響度 −15 LUFS（GOTCHAS E-6）
+│   ├── review-loop.md           ← 審片循環的流程與檢查表（GOTCHAS D-10）
+│   ├── review_times.py          ← 算審片時間點：旁白子句結束前、每頁落定
+│   ├── sheet.py                 ← 草稿抽格拼 contact sheet
 │   ├── polyphone_check.py       ← 旁白稿多音字預檢（GOTCHAS H-4）
 │   ├── fix_voice.py             ← 事後修念錯字（GOTCHAS H-5）
 │   ├── find_images.py           ← Wikimedia Commons 授權照片
-│   └── treat_images.py          ← 照片裁切、套色
+│   ├── treat_images.py          ← 照片裁切、套色
+│   ├── h3_runner.py             ← 走 ComfyUI 生成 H3 影片片段（選配，GOTCHAS D-15）
+│   └── hw_check.py              ← 看硬體，印出本流程的建議設定
 ├── templates/
 │   └── 發布資訊範本.md          ← 上架與社群文案範本（五個媒體專案共用，正本在 media-youtube-publish）
 ├── output/                      ← 用本 repo 做的影片專案（每支一個子資料夾，已列入 .gitignore）
@@ -85,6 +90,7 @@ media-video-specs/
 
 - 依教材做的影片，畫面、字幕、旁白**預設都不提「課本」**（不寫「課本」「課本 p.xx」「課本的表」，改用「假設⋯」之類中性說法）；教材出處與頁碼只記在 `SCRIPT.md` 的事實包，使用者明確要求才放進片中
 - 成片驗收通過後，照 `templates/發布資訊範本.md` 寫 `output/<主題>/發布資訊.md`（YouTube／FB／IG／Threads 文案、AI 揭露、`CREDITS.md` 署名）；範本五個媒體專案各一份、內容逐位元組相同，正本在 media-youtube-publish 的 `skills/youtube-long/references/`，改正本再整份覆蓋，不在本專案就地改
+- 宣告影片完成前一律跑審片循環（[tools/review-loop.md](tools/review-loop.md)）：沒看過目前這一版的 contact sheet，不算驗收過（GOTCHAS D-10）
 - 成片一律用 `tools/loudness.py --apply` 正規化到 **−15 LUFS**、真峰值 ≤ −1 dBTP 再交片（GOTCHAS E-6）
 - 三類共用的工具放 `tools/`，用 `--project output/<主題>` 呼叫；**不要複製進每個範本**（02、03 的 `generate_narration.py` 已經是兩份副本，改它時兩份一起改、只讓常數與旁白稿不同）
 - 讀音替換表 `tts-lexicon.md` **四個 repo 各一份、內容逐位元組相同**（本 repo、media-short-film、media-voice-clone、agent-speak/speak/；四個都公開，各自要單獨可用）：**改表時四份一起改**，用 `python ../media-short-film/tools/tts_lexicon.py --check`／`--sync` 檢查與合併；同層時程式會合併讀取，本 repo 的優先
@@ -104,7 +110,7 @@ media-video-specs/
 - 原作者 **三師爸** 的著作權聲明**必須保留**在 `LICENSE` 與 `README.md`，任何改寫都不得移除
 - 反之，原作者的**私人資訊**（個人帳號路徑、私有 repo 網址、其專屬 CI 設定）一律移除，不要在新增內容時又寫回去
 - 第三方素材授權（源石黑體 SIL OFL、Unsplash License、Wikimedia Commons 各檔授權）在 `LICENSE` 的 THIRD-PARTY ASSETS 段，新增素材要同步補上
-- 引用的第三方程式碼（`tools/` 改編自 mathruffian-dot/claude-motion-explainer-video，MIT）原著作權聲明附在 `LICENSE` 的 THIRD-PARTY CODE 段；改寫這些檔案時保留檔頭的來源註記
+- 引用的第三方程式碼（`tools/` 改編自 mathruffian-dot/claude-motion-explainer-video，MIT）審片循環另源自 whaleyxbt/claude-motion，MIT；原著作權聲明都附在 `LICENSE` 的 THIRD-PARTY CODE 段；改寫這些檔案時保留檔頭的來源註記
 
 ## 同步層級（本專案初始化至第 3 層級）
 

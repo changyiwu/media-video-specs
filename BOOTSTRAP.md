@@ -71,10 +71,12 @@
 | 源石黑體 | 範本內的 `examples/*/assets/fonts/GenSekiGothic2TW-H.otf` | ⚠️ 視覺一致（HyperFrames 只認專案內的字檔，GOTCHAS D-2） |
 | kokoro-onnx | `python -c "import kokoro_onnx"` | ⭕ **選用**，只有 `--tts kokoro` 才要（GOTCHAS H-1） |
 | fonttools | `python -c "import fontTools"` | ✅ 出片前字型瘦身（`tools/subset_fonts.py`，GOTCHAS D-12）；加裝 `brotli` 才輸出 woff2 |
-| Pillow | `python -c "import PIL"` | ⭕ **選用**，只有照片套色（`tools/treat_images.py`）才要 |
+| Pillow | `python -c "import PIL"` | ✅ 審片 contact sheet（`tools/sheet.py`）與照片套色（`tools/treat_images.py`） |
 | pypinyin＋opencc | `python -c "import pypinyin, opencc"` | ⭕ **選用**，旁白稿多音字預檢（`tools/polyphone_check.py`，GOTCHAS H-4） |
 
 也可以直接跑 `bash install/check_env.sh`（或 `python install/setup.py check`）取得同一份結果。
+
+再跑 `python tools/hw_check.py` 看這台電腦的硬體：它會印出建議的算繪 worker 數、Edge-TTS 版本是否夠新，以及能不能本機生成 H3 片段。建議值是推估，把和預設不同的地方告訴使用者即可。
 
 ### 缺少的元件，逐項詢問
 
@@ -160,7 +162,7 @@
 是一般的 shell 指令，四家 agent 都能跑；HyperFrames 另外提供給 agent 的 skills（`npx skills add heygen-com/hyperframes`）
 是選配，不裝也能照本流程出片。
 
-字型瘦身、成片響度、修唸錯字、找授權照片這幾件事用 repo 根目錄的共用工具（[tools/README.md](tools/README.md)），
+字型瘦身、審片、成片響度、修唸錯字、找授權照片這幾件事用 repo 根目錄的共用工具（[tools/README.md](tools/README.md)），
 都是一般的 Python 指令，用 `--project output/<主題>` 指向影片專案。
 
 ### 動工
@@ -173,8 +175,9 @@
 3. **旁白與時間軸**（02／03）：寫完旁白稿先跑 `python tools/polyphone_check.py --project output/<主題>` 預檢多音字（GOTCHAS H-4），再產生前兩頁給使用者試聽聲音與語速（`python generate_narration.py --page 1 --take try`，GOTCHAS H-7），確認後 `python generate_narration.py` 生成整支旁白並稽核，依稽核表調每頁的 `data-duration`，直到通過
 4. **預覽**：`npx --yes hyperframes@0.8.181 preview` 開瀏覽器預覽（存檔自動重新整理），讓使用者先看
 5. **關卡**：文字定稿後先 `python tools/subset_fonts.py --project output/<主題>` 瘦身字型（GOTCHAS D-12），再 `npx --yes hyperframes@0.8.181 check`，必須顯示 `Check passed`（缺素材、動畫被切掉都在這裡擋，GOTCHAS D-8）
-6. **產出**：`npx --yes hyperframes@0.8.181 render -o final.mp4`，再 `python tools/loudness.py output/<主題>/final.mp4 --apply` 把成片正規化到 −15 LUFS（GOTCHAS E-6），給使用者預覽
-7. **每完成一個重要里程碑都告知使用者**（不要悶頭做 10 分鐘才回報）
+6. **審片**：照 [tools/review-loop.md](tools/review-loop.md) 跑：`npx --yes hyperframes@0.8.181 render --quality draft -o renders/draft.mp4`，`python tools/sheet.py --project output/<主題>`，逐張 contact sheet 對照檢查表，修到一輪沒有問題（GOTCHAS D-10）
+7. **產出**：`npx --yes hyperframes@0.8.181 render -o final.mp4`，再 `python tools/loudness.py output/<主題>/final.mp4 --apply` 把成片正規化到 −15 LUFS（GOTCHAS E-6），給使用者預覽
+8. **每完成一個重要里程碑都告知使用者**（不要悶頭做 10 分鐘才回報）
 
 ### 試作完，詢問
 
@@ -212,7 +215,7 @@
 | 改片長 | 改各頁與對應 `<audio>` 的 `data-start`／`data-duration`、根節點的 `data-duration`，跑 `generate_narration.py --audit` 確認 |
 | 改語速／換聲音 | `generate_narration.py` 的 `RATE`／`VOICE`，重跑後整支時間軸要重排（GOTCHAS H-3） |
 
-每次調整後跑 `npx --yes hyperframes@0.8.181 check`、**重新算繪**、再跑 `tools/loudness.py --apply`（改過字的話先重跑 `tools/subset_fonts.py`），並再次詢問是否滿意。
+每次調整後跑 `npx --yes hyperframes@0.8.181 check`、審片循環（`tools/review-loop.md`）、**重新算繪**、再跑 `tools/loudness.py --apply`（改過字的話先重跑 `tools/subset_fonts.py`），並再次詢問是否滿意。
 
 ---
 
