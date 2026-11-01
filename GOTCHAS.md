@@ -211,6 +211,7 @@
 ### D-15 🔧📎 AI 影片片段（H3）：只放拍不到、又沒有授權素材的畫面
 - **什麼時候用**：社群科普片（規範 6.6），Tier 1～4 都找不到、又確實需要動態的畫面：開場鉤子、一個「拍不到」的動作、收尾情緒，每支 2–4 段。需要精確數字或方向的畫面交給 SVG；真實人物、真實品牌不要生。教學片（02）與活動紀錄（01）不需要。
 - **工具**：`python tools/h3_runner.py --check`，再 `… spec.json --out assets/videos/gen/<name>`，走 HTTP 呼叫 ComfyUI，只用標準函式庫。spec 加 `"draft": true`（Lightning LoRA、4 步）先看動作，定稿拿掉。第一格一定要給（`first_frame`），片段才會和片子同風格配色。
+- **同層有 [media-short-film](https://github.com/changyiwu/media-short-film) 且它的 H3 環境齊全時，優先用它的 `tools/h3_shot.py`**：那支的設定實際出過片，`h3_runner.py` 還沒有。指令與環境照該 repo 的說明，spec 同樣支援 `"draft": true`；生成的 `clip.mp4` 照下面的檢查與 D-14 處理。這是選用：本 repo 不依賴它，只下載本 repo 的人用 `h3_runner.py`。
 - **檢查**：片段不能憑 log 判斷，一定要看：`python tools/sheet.py --video <clip.mp4> --from 0 --to 5 --every 0.7 --out <資料夾>`，不合格換 seed。放進片子照 D-14，畫面標「AI 生成影片」。
 - **硬體**：上游 RTX 5090 實測生成時約用 26 GB VRAM，5 秒 draft 約 76 秒。更小的顯卡本 repo 未實測，`tools/hw_check.py` 會提醒。沒有環境時的退路：把 `prompt.txt` 和第一格交給使用者、用靜態圖代替，或不放。`h3_runner.py` 本 repo 只驗過 `--check`（連不上時的訊息）、`--lint`、`--dry-run`，尚未實際生成過。
 - **模型授權**：MiniMax H3 Community License，模型與產出都受它約束，用之前先讀。
