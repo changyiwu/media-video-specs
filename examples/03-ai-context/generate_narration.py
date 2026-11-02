@@ -30,15 +30,15 @@ OUT = HERE / "assets" / "narration"
 
 # Edge-TTS（預設，台灣腔）
 VOICE = "zh-TW-HsiaoChenNeural"  # 預設女聲；男聲用 zh-TW-YunJheNeural
-RATE = "-8%"  # 社群片比教學片略快（specs/03）
+RATE = "-10%"  # 和教學片新學單元相同（specs/03）
 PITCH = "-2Hz"
 
-# 念完旁白後的留白（秒），稽核用；規範建議 2~4s
-TAIL = (2, 4)
+# 念完旁白後的留白（秒），稽核用；規範 2~3s
+TAIL = (2, 3)
 
 # HyperFrames 內建 Kokoro-82M（備案：免網路、免金鑰，但只有中國口音的 zf_xiaobei）
 KOKORO_VOICE = "zf_xiaobei"
-KOKORO_SPEED = 0.92  # 對應 Edge-TTS 的 RATE -8%
+KOKORO_SPEED = 0.9  # 對應 Edge-TTS 的 RATE -10%
 
 SCRIPT = [
     (1,  "為什麼 AI 用一用，會突然忘了你剛剛說過什麼？"),
