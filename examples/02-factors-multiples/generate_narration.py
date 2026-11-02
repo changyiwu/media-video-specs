@@ -33,8 +33,8 @@ VOICE = "zh-TW-HsiaoChenNeural"  # 預設女聲；男聲用 zh-TW-YunJheNeural
 RATE = "-10%"  # 新學單元；複習片改 "+35%"（specs/02 7.1）
 PITCH = "-2Hz"
 
-# 念完旁白後的留白（秒）：新學單元 (2, 4)；複習片改 (1, 2)（specs/02 7.1）
-TAIL = (2, 4)
+# 念完旁白後的留白（秒）：新學單元 (2, 3)；複習片改 (1, 2)（specs/02 7.1）
+TAIL = (2, 3)
 
 # HyperFrames 內建 Kokoro-82M（備案：免網路、免金鑰，但只有中國口音的 zf_xiaobei）
 KOKORO_VOICE = "zf_xiaobei"
