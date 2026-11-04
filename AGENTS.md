@@ -96,6 +96,7 @@ media-video-specs/
 - 三類共用的工具放 `tools/`，用 `--project output/<主題>` 呼叫；**不要複製進每個範本**（02、03 的 `generate_narration.py` 已經是兩份副本，改它時兩份一起改、只讓常數與旁白稿不同）
 - 讀音替換表 `tts-lexicon.md` **四個 repo 各一份、內容逐位元組相同**（本 repo、media-short-film、media-voice-clone、agent-speak/speak/；四個都公開，各自要單獨可用）：**改表時四份一起改**，用 `python ../media-short-film/tools/tts_lexicon.py --check`／`--sync` 檢查與合併；同層時程式會合併讀取，本 repo 的優先
 - HyperFrames 版本**鎖定不追最新**，升級照 GOTCHAS D-11 的程序（三支範本 `check`／`render` 過再一起換版本號）
+- 渲染引擎**維持 HyperFrames，不改用 Remotion**（要 `npm install` 進雲端硬碟、授權對組織收費、三支範本與規範要整套重寫）；只有出現「同一份資料批次產生大量變體」「要嵌進網頁的互動播放器」「需要雲端平行算繪」這類 HyperFrames 做不到的需求時，才拿單支影片試 Remotion，不動既有範本
 
 ## 專案專屬規則：四家 Agent 對等
 
