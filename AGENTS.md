@@ -89,6 +89,7 @@ media-video-specs/
 其他常設規則：
 
 - 依教材做的影片，畫面、字幕、旁白**預設都不提「課本」**（不寫「課本」「課本 p.xx」「課本的表」，改用「假設⋯」之類中性說法）；教材出處與頁碼只記在 `SCRIPT.md` 的事實包，使用者明確要求才放進片中
+- 製作過程（render、`loudness.py`、審片）成片一律叫 `final.mp4`；**使用者驗收通過後改名成 `output/<主題>/<主題>.mp4`**（與資料夾同名），之後的封面、`發布資訊.md`、上傳都用這個檔名。定案後又重算，新的 `final.mp4` 驗收過再覆蓋 `<主題>.mp4`，資料夾裡不同時留兩支成片
 - 成片驗收通過後，照 `templates/發布資訊範本.md` 寫 `output/<主題>/發布資訊.md`（YouTube／FB／IG／Threads 文案、AI 揭露、`CREDITS.md` 署名）；範本五個媒體專案各一份、內容逐位元組相同，正本在 media-youtube-publish 的 `skills/youtube-long/references/`，改正本再整份覆蓋，不在本專案就地改
 - 宣告影片完成前一律跑審片循環（[tools/review-loop.md](tools/review-loop.md)）：沒看過目前這一版的 contact sheet，不算驗收過（GOTCHAS D-10）
 - 成片一律用 `tools/loudness.py --apply` 正規化到 **−15 LUFS**、真峰值 ≤ −1 dBTP 再交片（GOTCHAS E-6）

@@ -21,7 +21,7 @@
    - 看特定時刻：`… --at 3.7,3.75,3.8 --name exact`
    - 看局部細節：`npx --yes hyperframes@0.8.181 snapshot --at 3.7 --zoom "x,y,w,h" --no-end --describe false -o <資料夾>`
 5. **修正後回到第 0 步**。只改了幾頁的排版時，可以先不重算草稿：`python tools/review_times.py --project output/<主題> --pages` 給每頁落定時刻，用 `snapshot --at <秒數,…>` 拍（D-10）；動到時間或動畫，就要回到第 1 步。完整跑一輪都沒有發現問題才停。
-6. **定稿**：`npx --yes hyperframes@0.8.181 render -o final.mp4`，再 `python tools/loudness.py output/<主題>/final.mp4 --apply`（GOTCHAS E-6）。對成片再跑一次第 2 步（`--video` 指向成片），做聲音檢查。
+6. **定稿**：`npx --yes hyperframes@0.8.181 render -o final.mp4`，再 `python tools/loudness.py output/<主題>/final.mp4 --apply`（GOTCHAS E-6）。對成片再跑一次第 2 步（`--video` 指向成片），做聲音檢查。使用者驗收通過後，`final.mp4` 改名成 `output/<主題>/<主題>.mp4`（與資料夾同名）。
 
 ## 檢查表
 

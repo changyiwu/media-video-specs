@@ -177,7 +177,8 @@
 5. **關卡**：文字定稿後先 `python tools/subset_fonts.py --project output/<主題>` 瘦身字型（GOTCHAS D-12），再 `npx --yes hyperframes@0.8.181 check`，必須顯示 `Check passed`（缺素材、動畫被切掉都在這裡擋，GOTCHAS D-8）
 6. **審片**：照 [tools/review-loop.md](tools/review-loop.md) 跑：`npx --yes hyperframes@0.8.181 render --quality draft -o renders/draft.mp4`，`python tools/sheet.py --project output/<主題>`，逐張 contact sheet 對照檢查表，修到一輪沒有問題（GOTCHAS D-10）
 7. **產出**：`npx --yes hyperframes@0.8.181 render -o final.mp4`，再 `python tools/loudness.py output/<主題>/final.mp4 --apply` 把成片正規化到 −15 LUFS（GOTCHAS E-6），給使用者預覽
-8. **每完成一個重要里程碑都告知使用者**（不要悶頭做 10 分鐘才回報）
+8. **定案改名**：使用者驗收通過後，把 `final.mp4` 改名成 `output/<主題>/<主題>.mp4`（與資料夾同名），封面、`發布資訊.md` 與上傳都用這個檔名
+9. **每完成一個重要里程碑都告知使用者**（不要悶頭做 10 分鐘才回報）
 
 ### 試作完，詢問
 
